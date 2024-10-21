@@ -2,6 +2,8 @@ package com.ptit.EnglishExplorer.data.service.impl;
 
 import com.ptit.EnglishExplorer.data.service.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -47,5 +49,10 @@ public abstract class BaseServiceImpl<E, ID, R extends JpaRepository<E, ID>> imp
     @Override
     public boolean existsById(ID id) {
         return repository.existsById(id);
+    }
+
+    @Override
+    public Page<E> findList(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }

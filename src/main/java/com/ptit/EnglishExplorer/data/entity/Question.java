@@ -7,6 +7,7 @@ import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import com.ptit.EnglishExplorer.data.types.LevelType;
 import com.ptit.EnglishExplorer.data.types.SkillType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -37,7 +38,10 @@ public class Question extends AuditableEntity {
     @JsonIgnore
     private Set<Exam> exams = new HashSet<>();
 
+    @NotNull
     private String question;
+
+    private String explanation;
 
     private String image;
 

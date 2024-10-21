@@ -1,6 +1,5 @@
 package com.ptit.EnglishExplorer.data.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;

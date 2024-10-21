@@ -1,6 +1,9 @@
 package com.ptit.EnglishExplorer.api;
 
 import com.ptit.EnglishExplorer.data.service.CrudService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,13 @@ public abstract class BaseController<E, ID, S extends CrudService<E, ID>> {
     @GetMapping
     public ResponseEntity<List<E>> getAll() {
         List<E> entities = service.findAll();
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<Page<E>> getAllPaged(
+            @PageableDefault(size = 10, page = 0) Pageable pageable) { // Thiết lập kích thước mặc định
+        Page<E> entities = service.findList(pageable);
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
@@ -66,7 +76,5 @@ public abstract class BaseController<E, ID, S extends CrudService<E, ID>> {
         // Trả về thực thể đã bị xóa cùng với mã trạng thái OK
         return ResponseEntity.ok(entity.get());
     }
-
-
 
 }

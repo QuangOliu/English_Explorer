@@ -1,5 +1,9 @@
 package com.ptit.EnglishExplorer.data.service;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +19,7 @@ public interface CrudService<E, ID> {
     void deleteById(ID id);
 
     boolean existsById(ID id);
+
+    // Thêm phương thức phân trang
+    Page<E> findList(Pageable pageable);
 }
