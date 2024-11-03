@@ -1,10 +1,10 @@
 package com.ptit.EnglishExplorer.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import com.ptit.EnglishExplorer.data.types.AccessTypeCustom;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -23,7 +23,10 @@ public class Classroom extends AuditableEntity {
 
     private AccessTypeCustom accessType;
 
+    @NotNull
     private String name;
+
+    private String description;
 
     @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.EAGER)  // Corrected to "lesson"
     @JsonManagedReference

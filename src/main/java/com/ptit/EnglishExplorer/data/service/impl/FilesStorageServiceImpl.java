@@ -6,9 +6,13 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Stream;
 
+import com.ptit.EnglishExplorer.data.entity.Question;
+import com.ptit.EnglishExplorer.data.repository.QuestionRepository;
 import com.ptit.EnglishExplorer.data.service.FilesStorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class FilesStorageServiceImpl implements FilesStorageService {
 
     private final Path root = Paths.get("uploads");
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    public FilesStorageServiceImpl() {
+    }
 
     @Override
     public void init() {
@@ -93,4 +102,39 @@ public class FilesStorageServiceImpl implements FilesStorageService {
             throw new RuntimeException("Could not load the files!");
         }
     }
+
+    @Override
+    public void delete(String filename) {
+        try {
+            Files.deleteIfExists(root.resolve(filename));
+            List<Question> relatedQuestions = questionRepository.findByFileName(filename);
+
+            // set image or audio = null;
+            // Duyệt qua các câu hỏi và đặt trường image hoặc audio thành null nếu có liên kết với file đã xóa
+            for (Question question : relatedQuestions) {
+                boolean isUpdated = false;
+
+                // Kiểm tra nếu file trùng với trường image của câu hỏi
+                if (filename.equals(question.getImage())) {
+                    question.setImage(null);
+                    isUpdated = true;
+                }
+
+                // Kiểm tra nếu file trùng với trường audio của câu hỏi
+                if (filename.equals(question.getAudio())) {
+                    question.setAudio(null);
+                    isUpdated = true;
+                }
+
+                // Nếu có thay đổi, lưu lại câu hỏi
+                if (isUpdated) {
+                    questionRepository.save(question);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Could not delete file: " + filename, e);
+        }
+    }
+
 }

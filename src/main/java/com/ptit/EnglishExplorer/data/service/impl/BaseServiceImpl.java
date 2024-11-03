@@ -11,10 +11,10 @@ import java.util.Optional;
 
 public abstract class BaseServiceImpl<E, ID, R extends JpaRepository<E, ID>> implements CrudService<E, ID> {
 
-    protected final JpaRepository<E, ID> repository;
+    protected final R repository;
 
     @Autowired
-    public BaseServiceImpl(JpaRepository<E, ID> repository) {
+    public BaseServiceImpl(R repository) {
         this.repository = repository;
     }
 

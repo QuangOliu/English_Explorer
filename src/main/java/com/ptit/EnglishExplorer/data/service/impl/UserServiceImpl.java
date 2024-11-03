@@ -18,10 +18,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long, UserRepository>
         this.userRepository = userRepository;
     }
 
-
-
+    @Override
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Object loadUserByUsername(String username) {
+        return null;
     }
 
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
+import com.ptit.EnglishExplorer.data.types.AccessTypeCustom;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -25,15 +27,18 @@ public class Exam extends AuditableEntity {
 
     private String title;
 
+    private AccessTypeCustom accessType = AccessTypeCustom.PRIVATE; // Khởi tạo mặc định
+
     private String description;
 
     private String type;
     private String status;
     private LocalDate startDate;
     private LocalDate endDate;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     Set<Question> questions = new HashSet<>();
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "classroom_id")
     @JsonBackReference

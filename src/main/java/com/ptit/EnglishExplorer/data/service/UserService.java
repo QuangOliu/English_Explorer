@@ -10,4 +10,5 @@ public interface UserService extends CrudService<User, Long> {
 
     public Optional<User> getUserByUsername(String username);
 
+    Object loadUserByUsername(String username);
 }

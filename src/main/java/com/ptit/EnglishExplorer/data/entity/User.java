@@ -2,19 +2,30 @@ package com.ptit.EnglishExplorer.data.entity;
 
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
-@Table(name = "tbl_user", indexes = { @Index(columnList = "username", unique = true) })
-@AttributeOverrides({ @AttributeOverride(name = "create_date", column = @Column(nullable = true)),
-        @AttributeOverride(name = "created_by", column = @Column(nullable = true)) })
-public class User extends AuditableEntity {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "tbl_user", indexes = {@Index(columnList = "username", unique = true)})
+@AttributeOverrides({
+        @AttributeOverride(name = "create_date", column = @Column(nullable = true)),
+        @AttributeOverride(name = "created_by", column = @Column(nullable = true))
+})
+public class User extends AuditableEntity implements UserDetails {
 
     @Transient
     private static final long serialVersionUID = 5467396512939915793L;
@@ -30,7 +41,7 @@ public class User extends AuditableEntity {
     @Column(name = "password", length = 256, nullable = false)
     private String password;
 
-    @Column(name = "just_created", nullable = false)
+    @Column(name = "just_created", nullable = true)
     private Boolean justCreated;
 
     @Column(name = "email", nullable = false)
@@ -41,9 +52,9 @@ public class User extends AuditableEntity {
 
     @Column(name = "photo", nullable = true, columnDefinition = "LONGBLOB NULL")
     @Basic(fetch = FetchType.EAGER)
-    private byte[] photo;
+    private String photo;
 
-    @Column(name = "photo_cropped", nullable = false)
+    @Column(name = "photo_cropped", nullable = true)
     private Boolean photoCropped;
 
     @ManyToOne
@@ -56,7 +67,9 @@ public class User extends AuditableEntity {
     private Boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "tbl_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "tbl_user_role",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
     @Column(name = "account_non_expired", nullable = true)
@@ -68,9 +81,33 @@ public class User extends AuditableEntity {
     @Column(name = "credentials_non_expired", nullable = true)
     private Boolean credentialsNonExpired = true;
 
-    // --------------------------------------
-    // GETTERS/SETTERS
-    // --------------------------------------
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Convert roles to SimpleGrantedAuthority collection
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return accountNonExpired != null ? accountNonExpired : true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return accountNonLocked != null ? accountNonLocked : true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired != null ? credentialsNonExpired : true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return active != null && active;
+    }
 
     @Override
     public boolean equals(Object rhs) {
@@ -80,12 +117,8 @@ public class User extends AuditableEntity {
         return false;
     }
 
-    /**
-     * Returns the hashcode of the {@code username}.
-     */
     @Override
     public int hashCode() {
         return username.hashCode();
     }
-
 }

@@ -1,15 +1,17 @@
 package com.ptit.EnglishExplorer.data.service.impl;
 
+import com.ptit.EnglishExplorer.data.dto.QuestionSearchDto;
 import com.ptit.EnglishExplorer.data.entity.Choise;
 import com.ptit.EnglishExplorer.data.entity.Lesson;
-import com.ptit.EnglishExplorer.data.entity.Notification;
 import com.ptit.EnglishExplorer.data.entity.Question;
 import com.ptit.EnglishExplorer.data.repository.ChoiseRepository;
 import com.ptit.EnglishExplorer.data.repository.LessonRepository;
-import com.ptit.EnglishExplorer.data.repository.NotificationRepository;
 import com.ptit.EnglishExplorer.data.repository.QuestionRepository;
-import com.ptit.EnglishExplorer.data.service.NotificationService;
 import com.ptit.EnglishExplorer.data.service.QuestionService;
+import com.ptit.EnglishExplorer.data.types.SkillType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, QuestionRepository> implements QuestionService {
 
     private final String IMAGE_UPLOAD_DIR = "static/images/"; // Define the path for image uploads
     private final String AUDIO_UPLOAD_DIR = "static/audio/";  // Define the path for audio uploads
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public QuestionServiceImpl(QuestionRepository repository) {
@@ -57,6 +65,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
             // Cập nhật câu hỏi hiện có
             question = questionRepository.findById(entity.getId())
                     .orElseThrow(() -> new RuntimeException("Question not found"));
+            // Xoá các lựa chọn (choices) cũ
+            choiseRepository.deleteByQuestionId(question.getId());
+
         }
 
         // Cập nhật thuộc tính câu hỏi
@@ -66,7 +77,7 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
         question.setSkill(entity.getSkill());
         question.setLevel(entity.getLevel());
         question.setQuestion(entity.getQuestion());
-
+        question.setExplanation(entity.getExplanation());
         // Xử lý các lựa chọn
         if (entity.getChoises() != null) {
             question.getChoises().clear(); // Xóa các lựa chọn cũ
@@ -85,9 +96,13 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
             }
         }
 
+
         return questionRepository.save(question); // Lưu câu hỏi
     }
 
+    public List<Question> getQuestionsBySkill(SkillType skill) {
+        return questionRepository.findBySkill(skill);
+    }
     /**
      * Saves the image to the specified directory.
      *
@@ -158,6 +173,43 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
 
         // Return the saved audio path (relative to the static directory)
         return destinationPath.toString().replace("\\", "/").replace("src/main/resources/", "");
+    }
+
+    @Override
+    public List<Question> searchQuestions(QuestionSearchDto searchDto) {
+        String SQL = "SELECT q FROM Question q WHERE 1 = 1 ";
+
+        // Prepare a list to hold parameters
+        Map<String, Object> parameters = new HashMap<>();
+
+        // Check if skillType is not null
+        if (searchDto.getSkillType() != null) {
+            SQL += " AND q.skillType = :skillType ";
+            parameters.put("skillType", searchDto.getSkillType());
+        }
+
+        // Check if levelType is not null
+        if (searchDto.getLevelType() != null) {
+            SQL += " AND q.levelType = :levelType ";
+            parameters.put("levelType", searchDto.getLevelType());
+        }
+
+        // Check if question is not null or empty
+        if (searchDto.getQuestion() != null && !searchDto.getQuestion().isEmpty()) {
+            SQL += " AND LOWER(q.question) LIKE LOWER(:question) ";
+            parameters.put("question", "%" + searchDto.getQuestion() + "%");
+        }
+
+        // Create the query
+        Query query = entityManager.createQuery(SQL);
+
+        // Set parameters dynamically
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+
+        // Execute the query and return results
+        return query.getResultList();
     }
 
 }

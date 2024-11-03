@@ -1,18 +1,19 @@
 package com.ptit.EnglishExplorer.api;
 
+import com.ptit.EnglishExplorer.data.dto.QuestionSearchDto;
 import com.ptit.EnglishExplorer.data.entity.Notification;
 import com.ptit.EnglishExplorer.data.entity.Question;
 import com.ptit.EnglishExplorer.data.service.NotificationService;
 import com.ptit.EnglishExplorer.data.service.QuestionService;
+import com.ptit.EnglishExplorer.data.types.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/questions")
@@ -21,6 +22,11 @@ public class QuestionController extends BaseController<Question, Long, QuestionS
     @Autowired
     public QuestionController(QuestionService service) {
         super(service);
+    }
+
+    @PostMapping(path = "/search")
+    public List<Question> search(@RequestBody QuestionSearchDto filter) {
+        return service.searchQuestions(filter);
     }
 
     @PostMapping(value = "/upload/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
