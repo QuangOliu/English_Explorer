@@ -24,6 +24,12 @@ public class QuestionController extends BaseController<Question, Long, QuestionS
         super(service);
     }
 
+    @GetMapping(path="/get-by-exam/{examId}")
+    public List<Question> getByExam(@PathVariable Long examId) {
+        return service.getByExam(examId);
+    }
+
+
     @PostMapping(path = "/search")
     public List<Question> search(@RequestBody QuestionSearchDto filter) {
         return service.searchQuestions(filter);

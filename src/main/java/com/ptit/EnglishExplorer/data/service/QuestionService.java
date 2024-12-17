@@ -14,4 +14,5 @@ public interface QuestionService extends CrudService<Question, Long> {
     public String saveAudio(MultipartFile audioFile) throws IOException;
     public List<Question> getQuestionsBySkill(SkillType skill);
     public List<Question> searchQuestions(QuestionSearchDto searchDto);
+    List<Question> getByExam(Long examId);
 }

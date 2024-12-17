@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -54,8 +55,13 @@ public class FilesController {
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         Resource file = storageService.load(filename);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+                // Đặt Content-Disposition là inline để phát trực tiếp
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
+                // Đặt Content-Type là audio/mpeg
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .body(file);
     }
+
 
     @DeleteMapping("/files/{filename:.+}")
     public ResponseEntity<ResponseMessage> deleteFile(@PathVariable String filename) {

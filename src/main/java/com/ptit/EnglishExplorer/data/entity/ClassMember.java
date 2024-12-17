@@ -26,11 +26,11 @@ public class ClassMember extends AuditableEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     User user;
 
     @ManyToOne
-    @JoinColumn(name = "classroom_id", nullable = false)
+    @JoinColumn(name = "classroom_id", nullable = true)
     @JsonBackReference
     Classroom classroom;
     @Override

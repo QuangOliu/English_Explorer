@@ -10,9 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Data
-@Table(name = "tbl_action", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "question_id", "access_type"})
-})
+@Table(name = "tbl_action", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "question_id", "action_type"}))
 public class Action extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +25,7 @@ public class Action extends AuditableEntity {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    private ActionType accessType;
+    private ActionType actionType;
 
     @Override
     public boolean equals(Object o) {

@@ -212,4 +212,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
         return query.getResultList();
     }
 
+    @Override
+    public List<Question> getByExam(Long examId) {
+        return repository.getByExam(examId);
+    }
+
 }

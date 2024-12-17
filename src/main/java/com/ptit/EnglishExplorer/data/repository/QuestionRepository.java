@@ -14,4 +14,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findByFileName(@Param("filename") String filename);
 
     List<Question> findBySkill(SkillType skill);
+
+    @Query("SELECT q FROM Question q JOIN q.exams e WHERE e.id = :examId")
+    List<Question> getByExam(@Param("examId") Long examId);
 }

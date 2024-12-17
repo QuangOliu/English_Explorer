@@ -1,8 +1,8 @@
 package com.ptit.EnglishExplorer.data.entity.auditing;
 
+import com.ptit.EnglishExplorer.auditing.ApplicationAuditAware;
 import com.ptit.EnglishExplorer.data.entity.User;
 //import com.ptit.security.CommonUtils;
-//import com.ptit.security.SecurityUtils;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import org.apache.coyote.Constants;
@@ -19,16 +19,14 @@ public class EntityAuditListener {
 		auditableEntity.setCreateDate(now);
 		auditableEntity.setModifyDate(now);
 
-//		User user = SecurityUtils.getCurrentUser();
-//		auditableEntity.setCreatedBy("admin");
-//		if (CommonUtils.isNotNull(user)) {
-//
-//			auditableEntity.setCreatedBy(user.getUsername());
-//			auditableEntity.setModifiedBy(user.getUsername());
-//
-//		} else {
-//			auditableEntity.setCreatedBy("admin");
-//		}
+		User user = ApplicationAuditAware.getCurrentUser();
+		if (user != null) {
+			auditableEntity.setCreatedBy(user.getUsername());
+			auditableEntity.setModifiedBy(user.getUsername());
+		} else {
+			auditableEntity.setCreatedBy("admin");
+			auditableEntity.setModifiedBy("admin");
+		}
 	}
 
 	@PreUpdate
