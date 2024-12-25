@@ -16,7 +16,7 @@ public interface CrudService<E, ID> {
 
     E update(ID id, E entity);
 
-    void deleteById(ID id);
+    Boolean deleteById(ID id);
 
     boolean existsById(ID id);
 

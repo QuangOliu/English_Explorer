@@ -5,6 +5,7 @@ import com.ptit.EnglishExplorer.data.entity.Notification;
 import com.ptit.EnglishExplorer.data.entity.Question;
 import com.ptit.EnglishExplorer.data.service.NotificationService;
 import com.ptit.EnglishExplorer.data.service.QuestionService;
+import com.ptit.EnglishExplorer.data.types.ActionType;
 import com.ptit.EnglishExplorer.data.types.SkillType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,16 @@ public class QuestionController extends BaseController<Question, Long, QuestionS
         return service.getByExam(examId);
     }
 
+    @GetMapping(path = "/get-by-action")
+    public List<Question> getByAction(
+            @RequestParam(name = "action") ActionType action) {
+        return service.getByExamAndAction(action);
+    }
+
+    @GetMapping(path = "/get-mine")
+    public List<Question> getMine() {
+        return service.getMyQuestions();
+    }
 
     @PostMapping(path = "/search")
     public List<Question> search(@RequestBody QuestionSearchDto filter) {

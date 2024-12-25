@@ -41,24 +41,24 @@ public class User extends AuditableEntity implements UserDetails {
     @Column(name = "password", length = 256, nullable = false)
     private String password;
 
-    @Column(name = "just_created", nullable = true)
+    @Column(name = "just_created")
     private Boolean justCreated;
 
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "fullname", length = 100, nullable = false)
+    @Column(name = "fullname", length = 100, nullable = false, updatable = false)
     private String fullname;
 
-    @Column(name = "photo", nullable = true, columnDefinition = "LONGBLOB NULL")
+    @Column(name = "photo", columnDefinition = "LONGBLOB NULL")
     @Basic(fetch = FetchType.EAGER)
     private String photo;
 
-    @Column(name = "photo_cropped", nullable = true)
+    @Column(name = "photo_cropped")
     private Boolean photoCropped;
 
     @ManyToOne
-    @JoinColumn(name = "manager_id", nullable = true)
+    @JoinColumn(name = "manager_id")
     private User manager;
 
     /* Spring Security fields */
@@ -72,18 +72,17 @@ public class User extends AuditableEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
-    @Column(name = "account_non_expired", nullable = true)
+    @Column(name = "account_non_expired")
     private Boolean accountNonExpired = true;
 
-    @Column(name = "account_non_locked", nullable = true)
+    @Column(name = "account_non_locked")
     private Boolean accountNonLocked = true;
 
-    @Column(name = "credentials_non_expired", nullable = true)
+    @Column(name = "credentials_non_expired")
     private Boolean credentialsNonExpired = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convert roles to SimpleGrantedAuthority collection
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
                 .collect(Collectors.toSet());
@@ -111,10 +110,10 @@ public class User extends AuditableEntity implements UserDetails {
 
     @Override
     public boolean equals(Object rhs) {
-        if (rhs instanceof User) {
-            return username.equals(((User) rhs).username);
-        }
-        return false;
+        if (this == rhs) return true;
+        if (rhs == null || getClass() != rhs.getClass()) return false;
+        User user = (User) rhs;
+        return username.equals(user.username);
     }
 
     @Override

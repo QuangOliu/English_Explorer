@@ -139,11 +139,10 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
         }
 
 
-        // Add or merge questions from the entity
         for (Question question : entity.getQuestions()) {
             if (question.getId() != null) {
-                // Merge existing question
-                question = entityManager.merge(question);
+                // Merge existing question, no need to reassign to the variable
+                entityManager.merge(question);
             }
             exam.getQuestions().add(question); // Add the question to the exam
         }

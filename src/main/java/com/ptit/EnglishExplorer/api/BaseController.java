@@ -62,20 +62,20 @@ public abstract class BaseController<E, ID, S extends CrudService<E, ID>> {
 
     // Delete entity by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<E> delete(@PathVariable ID id) {
+    public ResponseEntity<Boolean> delete(@PathVariable ID id) {
         // Kiểm tra sự tồn tại của thực thể
         if (!service.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);  // Trả về false và mã lỗi 404 nếu không tìm thấy thực thể
         }
 
-        // Lấy thực thể để có thể trả về sau khi xóa
-        Optional<E> entity = service.findById(id);
-
         // Xóa thực thể
-        service.deleteById(id);
+        boolean isDeleted = service.deleteById(id);  // Kiểm tra kết quả xóa
 
-        // Trả về thực thể đã bị xóa cùng với mã trạng thái OK
-        return ResponseEntity.ok(entity.get());
+        if (isDeleted) {
+            return ResponseEntity.ok(true);  // Trả về true nếu xóa thành công
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);  // Trả về false nếu có lỗi xóa
+        }
     }
 
 }

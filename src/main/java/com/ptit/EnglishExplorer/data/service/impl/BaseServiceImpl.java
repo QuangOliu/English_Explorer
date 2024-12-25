@@ -42,8 +42,12 @@ public abstract class BaseServiceImpl<E, ID, R extends JpaRepository<E, ID>> imp
     }
 
     @Override
-    public void deleteById(ID id) {
-        repository.deleteById(id);
+    public Boolean deleteById(ID id) {
+        if (repository.existsById(id)) {  // Kiểm tra xem thực thể có tồn tại trong cơ sở dữ liệu hay không
+            repository.deleteById(id);    // Xóa thực thể nếu tồn tại
+            return true;                   // Trả về true nếu xóa thành công
+        }
+        return false;                      // Trả về false nếu không tìm thấy thực thể
     }
 
     @Override

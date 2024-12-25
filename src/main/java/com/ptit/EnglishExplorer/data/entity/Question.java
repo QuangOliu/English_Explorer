@@ -38,7 +38,6 @@ public class Question extends AuditableEntity {
     @JsonIgnore
     private Set<Exam> exams = new HashSet<>();
 
-    @NotNull
     private String question;
 
     private String explanation;

@@ -1,13 +1,16 @@
 package com.ptit.EnglishExplorer.data.service.impl;
 
+import com.ptit.EnglishExplorer.auditing.ApplicationAuditAware;
 import com.ptit.EnglishExplorer.data.dto.QuestionSearchDto;
 import com.ptit.EnglishExplorer.data.entity.Choise;
 import com.ptit.EnglishExplorer.data.entity.Lesson;
 import com.ptit.EnglishExplorer.data.entity.Question;
+import com.ptit.EnglishExplorer.data.entity.User;
 import com.ptit.EnglishExplorer.data.repository.ChoiseRepository;
 import com.ptit.EnglishExplorer.data.repository.LessonRepository;
 import com.ptit.EnglishExplorer.data.repository.QuestionRepository;
 import com.ptit.EnglishExplorer.data.service.QuestionService;
+import com.ptit.EnglishExplorer.data.types.ActionType;
 import com.ptit.EnglishExplorer.data.types.SkillType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -215,6 +218,18 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
     @Override
     public List<Question> getByExam(Long examId) {
         return repository.getByExam(examId);
+    }
+
+    @Override
+    public List<Question> getByExamAndAction(ActionType action) {
+        User user = ApplicationAuditAware.getCurrentUser();
+        return repository.findQuestionsByUserAndAction(user.getId(), action);
+    }
+
+    @Override
+    public List<Question> getMyQuestions() {
+        User user = ApplicationAuditAware.getCurrentUser();
+        return repository.findQuestionsByUser(user.getId());
     }
 
 }

@@ -3,6 +3,7 @@ package com.ptit.EnglishExplorer.data.service;
 import com.ptit.EnglishExplorer.data.dto.QuestionSearchDto;
 import com.ptit.EnglishExplorer.data.entity.Notification;
 import com.ptit.EnglishExplorer.data.entity.Question;
+import com.ptit.EnglishExplorer.data.types.ActionType;
 import com.ptit.EnglishExplorer.data.types.SkillType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,4 +16,8 @@ public interface QuestionService extends CrudService<Question, Long> {
     public List<Question> getQuestionsBySkill(SkillType skill);
     public List<Question> searchQuestions(QuestionSearchDto searchDto);
     List<Question> getByExam(Long examId);
+
+    List<Question> getByExamAndAction(ActionType action);
+
+    List<Question> getMyQuestions();
 }
