@@ -1,8 +1,6 @@
 package com.ptit.EnglishExplorer.api;
 
-import com.ptit.EnglishExplorer.data.entity.Choise;
 import com.ptit.EnglishExplorer.data.entity.Comment;
-import com.ptit.EnglishExplorer.data.service.ChoiseService;
 import com.ptit.EnglishExplorer.data.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

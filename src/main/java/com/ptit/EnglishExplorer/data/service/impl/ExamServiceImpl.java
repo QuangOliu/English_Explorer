@@ -86,8 +86,6 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
             }
         }
 
-        score = ((double) count /numberQuestionOfExam)*10;
-
         // Tính điểm cuối cùng dựa trên số câu đúng và hệ số
         score = ((double) count / numberQuestionOfExam) * 10;
 
@@ -98,7 +96,6 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
         UserExam savedEntity = userExamService.save(entity);
         return ResponseEntity.ok(savedEntity);
     }
-
 
     @Transactional
     @Override
@@ -140,6 +137,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
 
 
         for (Question question : entity.getQuestions()) {
+
             if (question.getId() != null) {
                 // Merge existing question, no need to reassign to the variable
                 entityManager.merge(question);

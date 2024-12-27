@@ -44,7 +44,7 @@ public class User extends AuditableEntity implements UserDetails {
     @Column(name = "just_created")
     private Boolean justCreated;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "fullname", length = 100, nullable = false, updatable = false)
