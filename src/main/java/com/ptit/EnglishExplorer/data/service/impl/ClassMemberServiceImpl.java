@@ -30,8 +30,13 @@ public class ClassMemberServiceImpl extends BaseServiceImpl<ClassMember, Long, C
 
     @Override
     public ClassMember save(ClassMember entity) {
-        User user = ApplicationAuditAware.getCurrentUser();
-        entity.setUser(user);
+        if (entity.getUser() == null) {
+            User user = ApplicationAuditAware.getCurrentUser();
+            entity.setUser(user);
+        }
+        if(entity.getUser()==null){
+            return null;
+        }
         return repository.save(entity);
     }
 
@@ -44,7 +49,7 @@ public class ClassMemberServiceImpl extends BaseServiceImpl<ClassMember, Long, C
     public List<User> getAllUserByClassroom(Long id) {
         return repository.getAllUserByClassroom(id);
     }
-    
+
     @Override
     @Transactional
     public boolean kickUser(Long userId, Long classroomId) {

@@ -67,4 +67,18 @@ public class VNPayUtil {
                                 , StandardCharsets.US_ASCII))
                 .collect(Collectors.joining("&"));
     }
+
+    public static boolean verifyVNPayPayment(Map<String, String> params, String secretKey) {
+        // Step 1: Remove the vnp_SecureHash parameter from the params map
+        String secureHash = params.remove("vnp_SecureHash");
+
+        // Step 2: Rebuild the data string excluding the SecureHash parameter
+        String hashData = getPaymentURL(params, false);
+
+        // Step 3: Compute the expected secure hash using HMAC SHA512
+        String expectedSecureHash = hmacSHA512(secretKey, hashData);
+
+        // Step 4: Compare the expected hash with the received hash
+        return secureHash != null && secureHash.equalsIgnoreCase(expectedSecureHash);
+    }
 }

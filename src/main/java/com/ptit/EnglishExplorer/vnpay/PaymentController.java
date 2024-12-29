@@ -14,7 +14,8 @@ public class PaymentController {
     private final PaymentService paymentService;
     @GetMapping("/vn-pay")
     public ResponseObject<PaymentDTO.VNPayResponse> pay(HttpServletRequest request) {
-        return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(request));
+        long amount = Integer.parseInt(request.getParameter("amount")) * 1L;
+        return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(amount, request,""));
     }
     @GetMapping("/vn-pay-callback")
     public ResponseObject<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletRequest request) {

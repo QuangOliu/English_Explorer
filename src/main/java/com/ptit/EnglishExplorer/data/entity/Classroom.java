@@ -26,6 +26,8 @@ public class Classroom extends AuditableEntity {
     @NotNull
     private String name;
 
+    private long cost = 0;
+
     private String description;
 
     @OneToMany(mappedBy = "classroom", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)  // Corrected to "lesson"

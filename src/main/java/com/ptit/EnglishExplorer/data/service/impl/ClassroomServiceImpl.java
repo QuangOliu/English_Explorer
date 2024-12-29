@@ -33,6 +33,7 @@ public class ClassroomServiceImpl extends BaseServiceImpl<Classroom, Long, Class
         newEntity.setName(entity.getName());
         newEntity.setDescription(entity.getDescription());
         newEntity.setAccessType(entity.getAccessType());
+        newEntity.setCost(entity.getCost());
 
         return repository.save(entity);
     }
