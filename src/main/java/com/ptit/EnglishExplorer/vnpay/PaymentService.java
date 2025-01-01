@@ -15,10 +15,6 @@ public class PaymentService {
     public PaymentDTO.VNPayResponse createVnPayPayment(long price, HttpServletRequest request, String orderInfo) {
         long amount = price * 100L;  // Tính số tiền thanh toán (nhân với 100 vì VNPay yêu cầu số tiền tính bằng đơn vị xu)
 
-        // Thêm timestamp vào orderInfo
-        long timestamp = System.currentTimeMillis();
-        orderInfo = orderInfo + ",timestamp:" + timestamp;
-
         String bankCode = "NCB";  // Mã ngân hàng (ví dụ ở đây là NCB)
 
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClassMemberRepository extends JpaRepository<ClassMember, Long> {
 
@@ -23,4 +24,7 @@ public interface ClassMemberRepository extends JpaRepository<ClassMember, Long> 
     @Query("DELETE FROM ClassMember cm WHERE cm.user.id = :userId AND cm.classroom.id = :classroomId")
     int deleteByUserIdAndClassroomId(@Param("userId") Long userId, @Param("classroomId") Long classroomId);
 
+    // Custom query to find a ClassMember by User ID and Classroom ID using JPQL
+    @Query("SELECT cm FROM ClassMember cm WHERE cm.user.id = :userId AND cm.classroom.id = :classroomId")
+    Optional<ClassMember> findByUserIdAndClassroomId(Long userId, Long classroomId);
 }
