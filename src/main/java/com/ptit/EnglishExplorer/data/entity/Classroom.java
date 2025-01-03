@@ -42,9 +42,6 @@ public class Classroom extends AuditableEntity {
     @JoinColumn(name = "manager_id", nullable = true)
     User user;
 
-    @ManyToMany(mappedBy = "classrooms")
-    private Set<Course> courses = new HashSet<>();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

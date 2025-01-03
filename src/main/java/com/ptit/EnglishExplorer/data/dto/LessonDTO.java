@@ -19,12 +19,10 @@ import java.util.Set;
 @NoArgsConstructor
 public class LessonDTO {
     private Long id;
-    private UserDTO user;
     private Set<QuestionDTO> questions = new HashSet<>();
 
     public LessonDTO(Lesson lesson) {
         this.id = lesson.getId();
-        this.user = new UserDTO(lesson.getUser());
         if (lesson.getQuestions() != null) {
             for (Question question : lesson.getQuestions()) {
                 this.questions.add(new QuestionDTO());

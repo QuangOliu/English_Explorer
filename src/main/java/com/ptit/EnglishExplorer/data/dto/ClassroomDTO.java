@@ -1,19 +1,8 @@
 package com.ptit.EnglishExplorer.data.dto;
 
-import com.ptit.EnglishExplorer.data.dto.ClassMemberDTO;
-import com.ptit.EnglishExplorer.data.dto.CourseDTO;
-import com.ptit.EnglishExplorer.data.dto.ExamDTO;
-import com.ptit.EnglishExplorer.data.dto.UserDTO;
-import com.ptit.EnglishExplorer.data.entity.ClassMember;
 import com.ptit.EnglishExplorer.data.entity.Classroom;
-import com.ptit.EnglishExplorer.data.entity.Course;
-import com.ptit.EnglishExplorer.data.entity.Exam;
-import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import com.ptit.EnglishExplorer.data.types.AccessTypeCustom;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Data

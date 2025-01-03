@@ -56,7 +56,9 @@ public class WalletController extends BaseController<Wallet, Long, WalletService
 
         // Kiểm tra nếu ví không tồn tại
         if (wallet == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            wallet = new Wallet();
+            wallet.setUser(user);
+            wallet = service.save(wallet);
         }
 
         return new ResponseEntity<>(wallet, HttpStatus.OK);

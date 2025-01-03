@@ -1,5 +1,6 @@
 package com.ptit.EnglishExplorer.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

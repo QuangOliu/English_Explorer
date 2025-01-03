@@ -14,21 +14,27 @@ import java.util.Set;
 @Table(name = "tbl_lesson")
 @Data
 public class Lesson extends AuditableEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Added auto-generation for id
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    @JsonBackReference
-    private Course course;
+    @JoinColumn(name = "chapter_id", nullable = false) // Changed course_id to chapter_id
+    @JsonBackReference // Use JsonBackReference to avoid circular references when serializing to JSON
+    private Chapter chapter; // Changed course to chapter
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "order_index", nullable = false) // Thêm trường orderIndex cho bài học
+    private int orderIndex;
+
+    private String title;
+
+    @Lob // Chỉ thị trường này là kiểu LONGTEXT trong MySQL
+    @Column(name = "content", columnDefinition = "LONGTEXT") // Cấu hình cột trong DB
+    private String content;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference // Use JsonManagedReference to serialize the lessons' questions correctly
     private Set<Question> questions = new HashSet<>();
 
     @Override
