@@ -10,4 +10,6 @@ public interface ClassroomService extends CrudService<Classroom, Long> {
     Page<ClassroomDTO> findListClassroomDTO(Pageable pageable);
 
     ResponseObject<?> buyById(Long id);
+
+    Page<Classroom> findMyOwnClassroom(Pageable pageable);
 }

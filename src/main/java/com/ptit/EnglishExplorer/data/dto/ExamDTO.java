@@ -25,6 +25,7 @@ public class ExamDTO extends AuditableEntity {
     private String status;
     private LocalDate startDate;
     private LocalDate endDate;
+    private ClassroomDTO classroom;
     Set<QuestionDTO> questions = new HashSet<>();
 
     public ExamDTO(Exam exam) {

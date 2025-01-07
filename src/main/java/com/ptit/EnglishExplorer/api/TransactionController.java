@@ -73,20 +73,4 @@ public class TransactionController extends BaseController<Transaction, Long, Tra
         // Thực hiện chuyển hướng đến URL mà service trả về
         response.sendRedirect(redirectUrl);
     }
-
-    // API để lấy một giao dịch cụ thể theo ID
-    @GetMapping("/{transactionId}")
-    public ResponseEntity<Transaction> getTransaction(@PathVariable Long transactionId) {
-        // Tìm giao dịch theo ID
-        Optional<Transaction> transaction = service.findById(transactionId);
-
-        // Kiểm tra nếu giao dịch không tồn tại
-        if (transaction.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Nếu không tìm thấy giao dịch, trả về NOT_FOUND
-        }
-
-        return new ResponseEntity<>(transaction.get(), HttpStatus.OK); // Nếu tìm thấy giao dịch, trả về giao dịch cùng với mã trạng thái OK
-    }
-
-
 }

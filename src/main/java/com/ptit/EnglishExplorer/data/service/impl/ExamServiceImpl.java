@@ -2,8 +2,14 @@ package com.ptit.EnglishExplorer.data.service.impl;
 
 import com.ptit.EnglishExplorer.auditing.ApplicationAuditAware;
 import com.ptit.EnglishExplorer.data.dto.AnswerDto;
+import com.ptit.EnglishExplorer.data.dto.ChoiseDTO;
+import com.ptit.EnglishExplorer.data.dto.ExamDTO;
+import com.ptit.EnglishExplorer.data.dto.QuestionDTO;
 import com.ptit.EnglishExplorer.data.entity.*;
-import com.ptit.EnglishExplorer.data.repository.*;
+import com.ptit.EnglishExplorer.data.repository.ChoiseRepository;
+import com.ptit.EnglishExplorer.data.repository.ClassroomRepository;
+import com.ptit.EnglishExplorer.data.repository.ExamRepository;
+import com.ptit.EnglishExplorer.data.repository.QuestionRepository;
 import com.ptit.EnglishExplorer.data.service.ExamService;
 import com.ptit.EnglishExplorer.data.service.UserExamService;
 import jakarta.persistence.EntityManager;
@@ -14,11 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository> implements ExamService {
@@ -56,7 +62,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
 
         int numberQuestionOfExam = exam.getQuestions().size();
 
-        if(numberQuestionOfExam == 0) {
+        if (numberQuestionOfExam == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
@@ -69,7 +75,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
         int count = 0;
         for (AnswerDto answer : answers) {
             Optional<Question> questionOpt = questionRepository.findById(answer.getQuestion().getId());
-            if(answer.getAnswerId() == null) {
+            if (answer.getAnswerId() == null) {
                 continue;
             }
             Optional<Choise> choiseOpt = choiseRepository.findById(answer.getAnswerId());
@@ -149,4 +155,88 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam, Long, ExamRepository>
         return repository.save(exam);
     }
 
+    @Override
+    public Exam create(ExamDTO dto) {
+        Exam entity = null;
+        if (dto.getId() != null) {
+            // Update existing exam
+            entity = repository.findById(dto.getId())
+                    .orElse(null);
+
+        }
+
+        if (entity == null) {
+            entity = new Exam();
+            // Check if the classroom is provided; if not, retain the existing one
+            Classroom classroom = null;
+            if (dto.getClassroom() != null && dto.getClassroom().getId() != null) {
+                classroom = classroomRepository.findById(dto.getClassroom().getId())
+                        .orElse(null);
+            }
+            entity.setClassroom(classroom);
+        }
+
+        // Set the exam properties
+        entity.setTitle(dto.getTitle());
+        entity.setDescription(dto.getDescription());
+        entity.setAccessType(dto.getAccessType());
+        entity.setType(dto.getType());
+        entity.setStatus(dto.getStatus());
+        entity.setStartDate(dto.getStartDate());
+        entity.setEndDate(dto.getEndDate());
+
+
+
+
+        // Clear existing questions if updating
+        if (entity.getQuestions() != null) {
+            entity.getQuestions().clear();
+        }else {
+            entity.setQuestions(new HashSet<>());
+        }
+        for (QuestionDTO questionDto : dto.getQuestions()) {
+
+            Question question = null;
+            if (questionDto.getId() != null) {
+                // Merge existing questionDto, no need to reassign to the variable
+                question = questionRepository.findById(questionDto.getId()).orElse(null);
+            }
+            if (question == null) {
+                question = new Question();
+            }
+            question.setAudio(questionDto.getAudio());
+            question.setImage(questionDto.getImage());
+            question.setExplanation(questionDto.getExplanation());
+            question.setQuestion(questionDto.getQuestion());
+            question.setLevel(questionDto.getLevel());
+            question.setSkill(questionDto.getSkill());
+            question.setExam(entity);
+
+            if(question.getChoises()!=null) {
+                question.getChoises().clear();
+            }else {
+                question.setChoises(new ArrayList<>());
+            }
+            if(questionDto.getChoises()!=null) {
+                for (ChoiseDTO choiseDTO : questionDto.getChoises()) {
+                    Choise choise = null;
+                    if (choiseDTO.getId() != null) {
+                        choise = choiseRepository.findById(choiseDTO.getId()).orElse(null);
+                    }
+                    if (choise == null) {
+                        choise = new Choise();
+                    }
+                    choise.setQuestion(question);
+                    choise.setAnswer(choiseDTO.getAnswer());
+                    choise.setCorrect(choiseDTO.isCorrect());
+                    question.getChoises().add(choise);
+                }
+            }
+
+            entity.getQuestions().add(question); // Add the question to the exam
+        }
+
+        // Save or update the exam
+        return repository.save(entity);
+    }
 }

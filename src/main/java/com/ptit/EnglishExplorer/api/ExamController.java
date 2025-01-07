@@ -2,6 +2,7 @@ package com.ptit.EnglishExplorer.api;
 
 import com.ptit.EnglishExplorer.auditing.ApplicationAuditAware;
 import com.ptit.EnglishExplorer.data.dto.AnswerDto;
+import com.ptit.EnglishExplorer.data.dto.ExamDTO;
 import com.ptit.EnglishExplorer.data.entity.Classroom;
 import com.ptit.EnglishExplorer.data.entity.Exam;
 import com.ptit.EnglishExplorer.data.entity.User;
@@ -9,6 +10,7 @@ import com.ptit.EnglishExplorer.data.entity.UserExam;
 import com.ptit.EnglishExplorer.data.service.ClassroomService;
 import com.ptit.EnglishExplorer.data.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,13 @@ public class ExamController extends BaseController<Exam, Long, ExamService> {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(exams);
+    }
+
+
+    @PostMapping("/save")
+    public ResponseEntity<Exam> save(@RequestBody ExamDTO entity) {
+        Exam createdEntity = service.create(entity);
+        return new ResponseEntity<>(createdEntity, HttpStatus.CREATED);
     }
 
     @PostMapping("/do-exam/{examId}")

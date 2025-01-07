@@ -20,7 +20,6 @@ public class Course extends AuditableEntity {
     private String description;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
 

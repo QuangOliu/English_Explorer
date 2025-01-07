@@ -34,7 +34,6 @@ public class Lesson extends AuditableEntity {
     private String content;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference // Use JsonManagedReference to serialize the lessons' questions correctly
     private Set<Question> questions = new HashSet<>();
 
     @Override

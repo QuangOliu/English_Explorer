@@ -19,7 +19,6 @@ public class Choise extends AuditableEntity {
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     private Long id;
 
-
     // Trong lớp Choise
     @ManyToOne
     @JoinColumn(name = "question_id")
@@ -38,15 +37,25 @@ public class Choise extends AuditableEntity {
                 ", id=" + id +
                 '}';
     }
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true; // Nếu cùng tham chiếu, trả về true.
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false; // Nếu đối tượng null hoặc khác lớp, trả về false.
+        }
 
         Choise choise = (Choise) obj;
 
-        return this.answer != null && this.answer.equals(choise.answer);
+        // So sánh tất cả các trường
+        return Objects.equals(this.id, choise.id) &&
+                Objects.equals(this.question, choise.question) &&
+                Objects.equals(this.answer, choise.answer) &&
+                this.correct == choise.correct;
     }
+
 
     @Override
     public int hashCode() {

@@ -10,9 +10,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -23,20 +21,19 @@ public class Question extends AuditableEntity {
     @Column(name = "id", unique = true, nullable = false, updatable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "lesson_id", nullable = true)  // Changed from "lession_id" to "lesson_id"
-    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "lesson_id", nullable = true)
     private Lesson lesson;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "exam_id")  // Changed from "lession_id" to "lesson_id"
+    private Exam exam;
 
     // Trong lớp Question
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    Set<Choise> choises = new HashSet<>();
+    List<Choise> choises = new ArrayList<>();
 
-    // Quan hệ nhiều-nhiều với Exam
-    @ManyToMany(mappedBy = "questions", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<Exam> exams = new HashSet<>();
 
     private String question;
 
@@ -65,15 +62,22 @@ public class Question extends AuditableEntity {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id); // chỉ dựa vào ID
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Question)) return false;
-        Question question = (Question) obj;
-        return Objects.equals(id, question.id);
+        Question other = (Question) obj;
+        return Objects.equals(id, other.id) &&
+                Objects.equals(question, other.question) &&
+                Objects.equals(explanation, other.explanation) &&
+                Objects.equals(image, other.image) &&
+                Objects.equals(audio, other.audio) &&
+                skill == other.skill &&
+                level == other.level;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lesson, exam, choises, question, explanation, image, audio, skill, level);
+    }
+
 }

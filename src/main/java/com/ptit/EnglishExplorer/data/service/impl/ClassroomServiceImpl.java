@@ -9,6 +9,7 @@ import com.ptit.EnglishExplorer.data.repository.TransactionRepository;
 import com.ptit.EnglishExplorer.data.repository.WalletRepository;
 import com.ptit.EnglishExplorer.data.service.ClassroomService;
 import com.ptit.EnglishExplorer.data.types.TransactionStatus;
+import com.ptit.EnglishExplorer.utils.RoleUtils;
 import com.ptit.EnglishExplorer.vnpay.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -150,6 +151,21 @@ public class ClassroomServiceImpl extends BaseServiceImpl<Classroom, Long, Class
             // Return error response if an exception occurs
             return new ResponseObject<>(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred: " + e.getMessage(), null);
         }
+    }
+
+    @Override
+    public Page<Classroom> findMyOwnClassroom(Pageable pageable) {
+        User user = ApplicationAuditAware.getCurrentUser();
+
+        if(RoleUtils.isAdmin(user)) {
+            return this.findList(pageable);
+        }
+        if (RoleUtils.isTeacher(user)) {
+            // Nếu người dùng là Teacher, tìm tất cả lớp học của giáo viên đó
+            return repository.findByTeacher(user.getUsername(), pageable);  // Giả sử có phương thức này trong repository
+        }
+
+        return null;  // Trường hợp không phải Admin hoặc Teacher, trả về null
     }
 
 }

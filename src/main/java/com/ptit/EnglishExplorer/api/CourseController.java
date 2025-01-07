@@ -1,5 +1,6 @@
 package com.ptit.EnglishExplorer.api;
 
+import com.ptit.EnglishExplorer.data.dto.CourseDto;
 import com.ptit.EnglishExplorer.data.entity.Course;
 import com.ptit.EnglishExplorer.data.service.CourseService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class CourseController extends BaseController<Course, Long, CourseService
     }
 
     @GetMapping("/get-by-classroom/{id}")
-    public List<Course> getByClassroom(@PathVariable Long id) {
+    public List<CourseDto> getByClassroom(@PathVariable Long id) {
         return service.getByClassroomId(id);
     }
 }

@@ -65,7 +65,7 @@ public class User extends AuditableEntity implements UserDetails {
     /* Spring Security fields */
 
     @Column(name = "active", nullable = false)
-    private Boolean active;
+    private Boolean active = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tbl_user_role",

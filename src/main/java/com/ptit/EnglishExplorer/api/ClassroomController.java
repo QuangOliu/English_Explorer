@@ -134,12 +134,18 @@ public class ClassroomController extends BaseController<Classroom, Long, Classro
         }
     }
 
-
-
     @GetMapping("/paging-dto")
     public ResponseEntity<Page<ClassroomDTO>> getAllPagedDto(
             @PageableDefault(size = 10, page = 0) Pageable pageable) { // Thiết lập kích thước mặc định
         Page<ClassroomDTO> entities = service.findListClassroomDTO(pageable);
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping("/page")
+    public ResponseEntity<Page<Classroom>> getAllPaged(
+            @PageableDefault(size = 10, page = 0) Pageable pageable) { // Thiết lập kích thước mặc định
+        Page<Classroom> entities = service.findMyOwnClassroom(pageable);
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 

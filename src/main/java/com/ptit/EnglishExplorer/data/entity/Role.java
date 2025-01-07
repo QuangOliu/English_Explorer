@@ -8,11 +8,13 @@ import com.ptit.EnglishExplorer.data.entity.User;
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Data
 @Table(name = "tbl_role", indexes = { @Index(columnList = "role_name", unique = true) })
+@NoArgsConstructor
 public class Role extends AuditableEntity{
 
     @Transient
@@ -41,6 +43,12 @@ public class Role extends AuditableEntity{
     // --------------------------------------
     // GETTERS/SETTERS
     // --------------------------------------
+
+
+    public Role(String name) {
+        this.name = name;
+    }
+
     @Transient
     @Override
     public String toString() {

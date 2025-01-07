@@ -30,13 +30,13 @@ public class Classroom extends AuditableEntity {
 
     private String description;
 
-    @OneToMany(mappedBy = "classroom", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)  // Corrected to "lesson"
-    @JsonManagedReference
-    Set<Exam> exams = new HashSet<>();
-
-    @OneToMany(mappedBy = "classroom", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    Set<ClassMember> classMembers= new HashSet<>();
+//    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+//    @JsonManagedReference
+//    private Set<Exam> exams = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+//    @JsonManagedReference
+//    private Set<ClassMember> classMembers = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "manager_id", nullable = true)

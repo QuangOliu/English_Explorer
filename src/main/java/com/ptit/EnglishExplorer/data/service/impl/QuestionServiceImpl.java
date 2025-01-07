@@ -2,21 +2,21 @@ package com.ptit.EnglishExplorer.data.service.impl;
 
 import com.ptit.EnglishExplorer.auditing.ApplicationAuditAware;
 import com.ptit.EnglishExplorer.data.dto.QuestionSearchDto;
-import com.ptit.EnglishExplorer.data.entity.Choise;
-import com.ptit.EnglishExplorer.data.entity.Lesson;
-import com.ptit.EnglishExplorer.data.entity.Question;
-import com.ptit.EnglishExplorer.data.entity.User;
+import com.ptit.EnglishExplorer.data.entity.*;
 import com.ptit.EnglishExplorer.data.repository.ChoiseRepository;
 import com.ptit.EnglishExplorer.data.repository.LessonRepository;
 import com.ptit.EnglishExplorer.data.repository.QuestionRepository;
 import com.ptit.EnglishExplorer.data.service.QuestionService;
 import com.ptit.EnglishExplorer.data.types.ActionType;
 import com.ptit.EnglishExplorer.data.types.SkillType;
+import com.ptit.EnglishExplorer.utils.RoleUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -229,7 +229,19 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, Long, Questio
     @Override
     public List<Question> getMyQuestions() {
         User user = ApplicationAuditAware.getCurrentUser();
-        return repository.findQuestionsByUser(user.getId());
+        return repository.findQuestionsByUserName(user.getUsername());
     }
+
+    @Override
+    public Page<Question> findList(Pageable pageable){
+        User user = ApplicationAuditAware.getCurrentUser();
+
+        if(RoleUtils.isAdmin(user)) {
+            return repository.findAll(pageable);
+        }
+
+        // Nếu người dùng là Teacher, tìm tất cả lớp học của giáo viên đó
+        return repository.findQuestionsByUser(user.getUsername(), pageable);  // Giả sử có phương thức này trong repository
+    };
 
 }

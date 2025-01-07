@@ -2,6 +2,7 @@ package com.ptit.EnglishExplorer.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.ptit.EnglishExplorer.data.entity.auditing.AuditableEntity;
 import com.ptit.EnglishExplorer.data.types.AccessTypeCustom;
@@ -35,8 +36,9 @@ public class Exam extends AuditableEntity {
     private String status;
     private LocalDate startDate;
     private LocalDate endDate;
-    @ManyToMany(cascade = CascadeType.ALL)
-    Set<Question> questions = new HashSet<>();
+
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+     Set<Question> questions = new HashSet<>();
 
     @NotNull
     @ManyToOne

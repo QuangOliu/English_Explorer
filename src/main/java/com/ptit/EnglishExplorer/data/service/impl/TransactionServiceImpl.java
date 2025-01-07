@@ -1,8 +1,8 @@
 package com.ptit.EnglishExplorer.data.service.impl;
 
 import com.ptit.EnglishExplorer.auditing.ApplicationAuditAware;
-import com.ptit.EnglishExplorer.config.Config;
 import com.ptit.EnglishExplorer.config.VNPAYConfig;
+import com.ptit.EnglishExplorer.data.entity.Question;
 import com.ptit.EnglishExplorer.data.entity.Transaction;
 import com.ptit.EnglishExplorer.data.entity.User;
 import com.ptit.EnglishExplorer.data.entity.Wallet;
@@ -10,6 +10,7 @@ import com.ptit.EnglishExplorer.data.repository.TransactionRepository;
 import com.ptit.EnglishExplorer.data.service.TransactionService;
 import com.ptit.EnglishExplorer.data.service.WalletService;
 import com.ptit.EnglishExplorer.data.types.TransactionStatus;
+import com.ptit.EnglishExplorer.utils.RoleUtils;
 import com.ptit.EnglishExplorer.utils.VNPayUtil;
 import com.ptit.EnglishExplorer.vnpay.PaymentDTO;
 import com.ptit.EnglishExplorer.vnpay.PaymentService;
@@ -20,8 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -160,10 +159,31 @@ public class TransactionServiceImpl extends BaseServiceImpl<Transaction, Long, T
 
     @Override
     public Page<Transaction> findList(Pageable pageable) {
-        // Sort transactions by createdAt in descending order to get the most recent first
-        Pageable sortedByDate = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("createdAt")));
-        return repository.findAll(sortedByDate);  // Use the sorted pageable for the query
+        // Lấy thông tin người dùng hiện tại
+        User user = ApplicationAuditAware.getCurrentUser();
+
+        // Kiểm tra nếu là ADMIN
+        if (RoleUtils.isAdmin(user)) {
+            // Sắp xếp theo ngày tạo giảm dần
+            Pageable sortedByDate = PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    Sort.by(Sort.Order.desc("createdAt"))
+            );
+            return repository.findAll(sortedByDate);
+        }
+
+        // Nếu không phải ADMIN, áp dụng sắp xếp cho Teacher
+        Pageable sortedByDateForUser = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Order.desc("createdAt"))
+        );
+
+        return repository.findTransactionsByUser(user.getUsername(), sortedByDateForUser);
     }
+
+
 
 
 }

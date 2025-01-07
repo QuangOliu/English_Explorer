@@ -20,7 +20,6 @@ public class Chapter extends AuditableEntity {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @JsonIgnore
     private Course course; // Một chương thuộc về một mon hoc
 
     @Column(name = "title", nullable = false)
