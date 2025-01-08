@@ -1,10 +1,7 @@
 package com.ptit.EnglishExplorer.api;
+
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,7 +11,7 @@ import java.net.URL;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/chatbot")
+@RequestMapping("/api/v1/chatbot")
 public class ChatbotController {
 
     @PostMapping("/message")
@@ -25,6 +22,9 @@ public class ChatbotController {
     }
 
     private String getBotResponseFromPython(String userInput) {
+        // Chuyển userInput thành chữ thường
+        String lowerCaseInput = userInput.toLowerCase();
+
         // Tạo kết nối tới Flask API (Python chatbot)
         try {
             URL url = new URL("http://localhost:5000/api/chat");  // Flask app đang chạy ở cổng 5000
@@ -33,7 +33,7 @@ public class ChatbotController {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
 
-            String jsonInputString = "{\"user_input\": \"" + userInput + "\"}";
+            String jsonInputString = "{\"user_input\": \"" + lowerCaseInput + "\"}";
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");

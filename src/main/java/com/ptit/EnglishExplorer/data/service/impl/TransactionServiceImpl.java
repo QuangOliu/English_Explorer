@@ -163,15 +163,15 @@ public class TransactionServiceImpl extends BaseServiceImpl<Transaction, Long, T
         User user = ApplicationAuditAware.getCurrentUser();
 
         // Kiểm tra nếu là ADMIN
-        if (RoleUtils.isAdmin(user)) {
-            // Sắp xếp theo ngày tạo giảm dần
-            Pageable sortedByDate = PageRequest.of(
-                    pageable.getPageNumber(),
-                    pageable.getPageSize(),
-                    Sort.by(Sort.Order.desc("createdAt"))
-            );
-            return repository.findAll(sortedByDate);
-        }
+//        if (RoleUtils.isAdmin(user)) {
+//            // Sắp xếp theo ngày tạo giảm dần
+//            Pageable sortedByDate = PageRequest.of(
+//                    pageable.getPageNumber(),
+//                    pageable.getPageSize(),
+//                    Sort.by(Sort.Order.desc("createdAt"))
+//            );
+//            return repository.findAll(sortedByDate);
+//        }
 
         // Nếu không phải ADMIN, áp dụng sắp xếp cho Teacher
         Pageable sortedByDateForUser = PageRequest.of(
